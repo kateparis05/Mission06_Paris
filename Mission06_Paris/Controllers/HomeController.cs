@@ -1,31 +1,43 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Mission06_Paris.Models;
+using Mission06_Paris.Models; // Add this to reference your models
 
-namespace Mission06_Paris.Controllers;
-
-public class HomeController : Controller
+namespace Mission06_Paris.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly MovieDbContext _context;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public HomeController(MovieDbContext context)
+        {
+            _context = context;
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult AddMovie()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddMovie(Movie movie)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Movies.Add(movie);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(movie);
+        }
     }
 }
